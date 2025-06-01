@@ -19,8 +19,8 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('role', ['super_admin', 'admin', 'super_dealer', 'biker']);
-            $table->string('sex')->nullable();
+            $table->enum('role', ['super_admin','super_dealer', 'biker']);
+            $table->enum('sex', ['male', 'female'])->nullable();
             $table->string('profile_picture')->nullable();
             $table->unsignedBigInteger('created_by')->nullable();
             $table->rememberToken();
@@ -46,6 +46,8 @@ return new class extends Migration {
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Artisan::call('db:seed', ['--class' => 'DefaultAdminSeeder']);
     }
 
     /**

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ProductPrice;
+use App\Models\BikerReturn;
 use Illuminate\Http\Request;
 
-class ProductPriceController extends Controller
+class BikerReturnController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +26,7 @@ class ProductPriceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProductPrice $productPrice)
+    public function show(BikerReturn $bikerReturn)
     {
         //
     }
@@ -34,7 +34,7 @@ class ProductPriceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, ProductPrice $productPrice)
+    public function update(Request $request, BikerReturn $bikerReturn)
     {
         //
     }
@@ -42,7 +42,7 @@ class ProductPriceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductPrice $productPrice)
+    public function destroy(BikerReturn $bikerReturn)
     {
         //
     }

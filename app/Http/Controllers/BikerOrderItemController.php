@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Commission;
+use App\Models\BikerOrderItem;
 use Illuminate\Http\Request;
 
-class CommissionController extends Controller
+class BikerOrderItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +26,7 @@ class CommissionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Commission $commission)
+    public function show(BikerOrderItem $bikerOrderItem)
     {
         //
     }
@@ -34,7 +34,7 @@ class CommissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Commission $commission)
+    public function update(Request $request, BikerOrderItem $bikerOrderItem)
     {
         //
     }
@@ -42,7 +42,7 @@ class CommissionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Commission $commission)
+    public function destroy(BikerOrderItem $bikerOrderItem)
     {
         //
     }

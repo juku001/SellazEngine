@@ -10,12 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('companies', function (Blueprint $table) {
+        Schema::create('biker_returns', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('abbr')->nullable();
-            $table->string('logo')->nullable();
-            $table->text('description')->nullable();
+            $table->foreignId('order_item_id')->constrained('biker_order_items');
+            $table->integer('quantity_returned');
+            $table->string('reason')->nullable();
+            $table->timestamp('returned_at')->useCurrent();
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('companies');
+        Schema::dropIfExists('biker_returns');
     }
 };
