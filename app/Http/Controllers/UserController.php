@@ -54,4 +54,13 @@ class UserController extends Controller
             'code' => 401,
         ], 401);
     }
+
+
+    public function authorized()
+    {
+        return response()->json([
+            'status' => true,
+            'message' => 'Authenticated'
+        ]);
+    }
 }

@@ -23,7 +23,7 @@ class LogInController extends Controller
         if ($validator->fails()) {
             return ResponseHelper::error('Validation Error.', $validator->errors(), 422);
         }
-        $user = User::where('email', $request->email)->first();
+        $user = User::with('company')->where('email', $request->email)->first();
 
         if (!$user) {
             return ResponseHelper::error('Account does not exist.', [], 404);
@@ -43,7 +43,7 @@ class LogInController extends Controller
     /**
      *Log in function but only for biker
      */
-    public function biker(Request $request)
+    public function app(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'phone' => 'required|regex:/^255\d{9}$/',
@@ -53,7 +53,7 @@ class LogInController extends Controller
         if ($validator->fails()) {
             return ResponseHelper::error('Validation Error.', $validator->errors(), 422);
         }
-        $user = User::where('phone', $request->phone)->first();
+        $user = User::with('company')->where('phone', $request->phone)->first();
 
         if (!$user) {
             return ResponseHelper::error('Account does not exist.', [], 404);
@@ -63,13 +63,11 @@ class LogInController extends Controller
             return ResponseHelper::error('Invalid account credentials.', [], 401);
         }
 
-        if ($user->user_type !== 'biker') {
-            return ResponseHelper::error('Access denied. Only bikers can log in here.', [], 403);
+        if ($user->role === 'super_admin') {
+            return ResponseHelper::error('Access denied. Only bikers and superdealers can log in here.', [], 403);
         }
         $success['token'] = $user->createToken('MyApp')->plainTextToken;
-        $success['name'] = $user->name;
-        $success['profile_pic'] = $user->profile_pic;
-        $success['type'] = $user->user_type;
+        $success['user'] = $user;
         return ResponseHelper::success('User login successfully.', $success);
     }
 
@@ -86,7 +84,7 @@ class LogInController extends Controller
         if ($user) {
             $user->currentAccessToken()->delete();
             return ResponseHelper::success('Successfully logged out.', []);
-        }else{
+        } else {
             return ResponseHelper::error('User not logged in.', []);
         }
     }

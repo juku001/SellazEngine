@@ -27,7 +27,8 @@ class CompanyController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'abbr' => 'nullable|string',
-            'description' => 'required|string'
+            'description' => 'required|string',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
         if ($validator->fails()) {
             return ResponseHelper::error(
@@ -36,13 +37,21 @@ class CompanyController extends Controller
                 422
             );
         }
-        try {
-            $company = Company::create([
-                'name' => $request->name,
-                'abbr' => $request->abbr,
-                'description' => $request->description
-            ]);
 
+
+
+        try {
+            $company = new Company();
+            $company->name = $request->name;
+            $company->abbr = $request->abbr;
+            $company->description = $request->description;
+            // Handle optional image upload
+            if ($request->hasFile('logo')) {
+                $image = $request->file('logo');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('companies'), $imageName);
+                $company->logo = "companies/" . $imageName;
+            }
             if ($company->save()) {
                 return ResponseHelper::success('Company added successful.', $company, 201);
             } else {

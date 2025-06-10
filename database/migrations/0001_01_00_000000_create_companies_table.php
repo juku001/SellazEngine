@@ -16,6 +16,10 @@ return new class extends Migration {
             $table->string('abbr')->nullable();
             $table->string('logo')->nullable();
             $table->text('description')->nullable();
+            $table->string('primary_color')->nullable();
+            $table->string('secondary_color')->nullable();
+            $table->string('background_color')->nullable();
+            $table->string('text_color')->nullable();
             $table->timestamps();
         });
     }

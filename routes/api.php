@@ -18,10 +18,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class, 'unauthorized'])->name('login');
 Route::post('/login', [LogInController::class, 'index']);
-Route::post('/login/biker', [LogInController::class, 'biker']);
+Route::post('/login/app', [LogInController::class, 'app']);
 Route::post('/logout', [LogInController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/is_auth', [UserController::class, 'authorized']);
 
     Route::middleware(['check.user_type:super_admin'])->group(function () {
 
