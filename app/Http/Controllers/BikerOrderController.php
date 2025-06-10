@@ -27,6 +27,83 @@ class BikerOrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+
+    /**
+     * Place a new order as a Super Dealer.
+     *
+     * @OA\Post(
+     *     path="/biker/order/request",
+     *     summary="Biker Place an order request",
+     *     tags={"BikerOrders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"products"},
+     *             @OA\Property(
+     *                 property="products",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     required={"product_id", "quantity"},
+     *                     @OA\Property(
+     *                         property="product_id",
+     *                         type="integer",
+     *                         example=101,
+     *                         description="ID of the product"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="quantity",
+     *                         type="integer",
+     *                         example=3,
+     *                         description="Quantity of the product"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order placed successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order placed successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="order_id", type="integer", example=123),
+     *                 @OA\Property(property="total", type="number", format="float", example=15000.00)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={"products.0.product_id": {"Each product must have a product ID."}}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Order creation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order creation failed."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(property="error", type="string", example="Product ID 999 not found for this company.")
+     *             )
+     *         )
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -108,7 +185,7 @@ class BikerOrderController extends Controller
 
 
 
-    
+
 
 
 
@@ -124,6 +201,56 @@ class BikerOrderController extends Controller
     // /**
     //  * Update the specified resource in storage.
     //  */
+    /**
+     * Activate a biker order and deduct stock.
+     *
+     * @OA\Put(
+     *     path="/biker/order/activate/{id}",
+     *     summary="Activate Biker Order",
+     *     tags={"BikerOrders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the biker order to activate",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order activated and stock deducted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order activated and stock deducted successfully.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Order already active or closed / Insufficient stock",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order already active or closed.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order or stock not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error while activating order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Failed to activate order. Error: ...")
+     *         )
+     *     )
+     * )
+     */
+
     public function update(Request $request, int $id)
     {
         $bikerOrder = BikerOrder::find($id);
@@ -177,6 +304,58 @@ class BikerOrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+
+
+    /**
+     * Delete a pending biker order.
+     *
+     * @OA\Delete(
+     *     path="/biker/order/delete/{id}",
+     *     summary="Delete a pending biker order",
+     *     tags={"BikerOrders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the biker order to delete",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order deleted successful.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Cannot delete active order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Can not delete an active order.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error while deleting order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Failed to delete, Error: ...")
+     *         )
+     *     )
+     * )
+     */
+
     public function destroy(int $id)
     {
         $bikerOrder = BikerOrder::find($id);

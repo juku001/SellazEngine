@@ -13,6 +13,52 @@ use Validator;
 
 class RegistrationController extends Controller
 {
+
+
+
+    /**
+     * @OA\Post(
+     *     path="/register/superadmin",
+     *     tags={"Registration"},
+     *     summary="Register a Super Admin",
+     *     description="This endpoint registers a new super admin user.",
+     *     operationId="registerSuperAdmin",
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "phone", "password", "password_confirmation", "sex"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
+     *             @OA\Property(property="phone", type="string", example="255712345678"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="sex", type="string", enum={"male", "female"}, example="male")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Super admin registered successfully.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Super admin registered successfully."),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(property="data", ref="#/components/schemas/SuperAdmin")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation Error."),
+     *             @OA\Property(property="code", type="integer", example=422),
+     *             @OA\Property(property="data", type="object", example={"phone": {"Mobile phone should start with 255"}})
+     *         )
+     *     )
+     * )
+     */
+
     public function super(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -45,38 +91,55 @@ class RegistrationController extends Controller
     }
 
 
-    // public function admin(Request $request)
-    // {
-    //     $validator = Validator::make($request->all(), [
-    //         'name' => 'required|string',
-    //         'email' => 'required|email|unique:users,email',
-    //         'phone' => 'required|regex:/^255\d{9}$/|unique:users,phone',
-    //         'password' => 'required|min:6|confirmed',
-    //         'company_id' => 'required|exists:companies,id',
-    //         'sex' => 'required|in:male,female'
-    //     ], [
-    //         'company_id.exists' => 'Company ID does not exist'
-    //     ]);
 
-    //     if ($validator->fails()) {
-    //         return ResponseHelper::error('Validation Error.', $validator->errors(), 422);
-    //     }
 
-    //     $currentUserId = Auth::user()->id;
-    //     $user = User::create([
-    //         'name' => $request->name,
-    //         'email' => $request->email,
-    //         'phone' => $request->phone,
-    //         'password' => Hash::make($request->password),
-    //         'role' => 'admin',
-    //         'sex' => $request->sex,
-    //         'company_id' => $request->company_id,
-    //         'created_by' => $currentUserId
-    //     ]);
 
-    //     return ResponseHelper::success('Admin registered successfully.', $user);
-    // }
 
+    /**
+     * @OA\Post(
+     *     path="/register/superdealer",
+     *     tags={"Registration"},
+     *     summary="Register a Super Dealer",
+     *     description="This endpoint registers a new super dealer.",
+     *     operationId="registerSuper Dealer",
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "phone", "password", "password_confirmation", "sex", "company_id"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
+     *             @OA\Property(property="phone", type="string", example="255712345678"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="location", type="string", nullable=true, example="Kisutu, Ilala"),
+     *             @OA\Property(property="company_id", type="integer", example=1),
+     *             @OA\Property(property="business_name", type="string", nullable=true, example="Mkuya Shop"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="sex", type="string", enum={"male", "female"}, example="male")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Super dealer registered successfully.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Super dealer registered successfully."),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(property="data", ref="#/components/schemas/OtherUsers")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation Error."),
+     *             @OA\Property(property="code", type="integer", example=422),
+     *             @OA\Property(property="data", type="object", example={"phone": {"Mobile phone should start with 255"}})
+     *         )
+     *     )
+     * )
+     */
     public function dealer(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -113,6 +176,55 @@ class RegistrationController extends Controller
         return ResponseHelper::success('Super dealer registered successfully.', $user);
     }
 
+
+
+
+
+    /**
+     * @OA\Post(
+     *     path="/register/biker",
+     *     tags={"Registration"},
+     *     summary="Register a Biker",
+     *     description="This endpoint registers a new Biker.",
+     *     operationId="registerBiker",
+     *     security={{"sanctum": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name", "email", "phone", "password", "password_confirmation", "sex", "company_id"},
+     *             @OA\Property(property="name", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", format="email", example="admin@example.com"),
+     *             @OA\Property(property="phone", type="string", example="255712345678"),
+     *             @OA\Property(property="password", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="location", type="string", nullable=true, example="Kisutu, Ilala"),
+     *             @OA\Property(property="company_id", type="integer", example=1),
+     *             @OA\Property(property="business_name", type="string", nullable=true, example="Mkuya Shop"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="secret123"),
+     *             @OA\Property(property="sex", type="string", enum={"male", "female"}, example="male")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Biker registered successfully.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Biker registered successfully."),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(property="data", ref="#/components/schemas/OtherUsers")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation Error."),
+     *             @OA\Property(property="code", type="integer", example=422),
+     *             @OA\Property(property="data", type="object", example={"phone": {"Mobile phone should start with 255"}})
+     *         )
+     *     )
+     * )
+     */
 
     public function biker(Request $request)
     {

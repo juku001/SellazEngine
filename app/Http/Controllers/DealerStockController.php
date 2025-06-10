@@ -14,6 +14,67 @@ use Validator;
 class DealerStockController extends Controller
 {
 
+
+    /**
+     * Approve a Super Dealer order by ID.
+     *
+     * @OA\Post(
+     *     path="/order/status",
+     *     summary="Approve a Super Dealer order",
+     *     tags={"Super Dealer"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"order_id"},
+     *             @OA\Property(
+     *                 property="order_id",
+     *                 type="integer",
+     *                 example=123,
+     *                 description="ID of the order to approve"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order approved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order approved successfully.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={"order_id": {"The specified order does not exist."}}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error while updating order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Failed to update the order.")
+     *         )
+     *     )
+     * )
+     */
+
     public function status(Request $request)
     {
         $validator = Validator::make($request->only('order_id'), [
@@ -50,6 +111,75 @@ class DealerStockController extends Controller
 
 
 
+
+
+        /**
+     * Fulfill an approved Super Dealer order and update their stock.
+     *
+     * @OA\Post(
+     *     path="/order/fulfill",
+     *     summary="Fulfill a Super Dealer order",
+     *     tags={"Super Dealer"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"order_id"},
+     *             @OA\Property(
+     *                 property="order_id",
+     *                 type="integer",
+     *                 example=123,
+     *                 description="ID of the approved order to be fulfilled"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order fulfilled and stocks updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order fulfilled and stocks updated successfully.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Order not approved yet",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Approve order first.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Order not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={"order_id": {"The specified order does not exist."}}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Server error while fulfilling the order",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Error fulfilling order: Something went wrong.")
+     *         )
+     *     )
+     * )
+     */
 
     public function store(Request $request)
     {

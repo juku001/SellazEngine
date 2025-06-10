@@ -26,6 +26,32 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
+
+    /**
+     * @OA\Get(
+     *   tags={"Product"},
+     *   path="/products",
+     *   summary="Get list of products",
+     *   description="Fetches a list of all products of that particular company",
+     *   operationId="getProducts",
+     *   security={{"bearerAuth":{}}},
+     *   @OA\Response(
+     *         response=200,
+     *         description="List of products retrieved successfully.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="List of all products"),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Product")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
     public function index()
     {
         $companyId = auth()->user()->company_id;
@@ -37,6 +63,59 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Store a newly created resource in storage.
      */
+
+
+    /**
+     * @OA\Post(
+     *     path="/products",
+     *     tags={"Product"},
+     *     summary="Create a new Product",
+     *     description="Stores a new Product with a name, brand, company_id, and product image.",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"name", "company_id","brand","image", "company_price"},
+     *                 @OA\Property(property="name", type="string", example="Master Sports"),
+     *                 @OA\Property(property="brand", type="string", example="SM"),
+     *                 @OA\Property(property="company_id", type="integer", example=1),
+     *                 @OA\Property(property="company_price", type="integer", example=12000),
+     *                 @OA\Property(
+     *                     property="image",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Image file to upload"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product added successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Product added successfully"),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *              @OA\Property(property="data", ref="#/components/schemas/Product")
+     *         )
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422"),
+     *     @OA\Response(response=401, ref="#/components/responses/401"),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal Server Error",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Failed to add Product."),
+     *             @OA\Property(property="code", type="integer", example=500),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -65,6 +144,61 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Display the specified resource.
      */
+
+
+
+
+    /**
+     * @OA\Get(
+     *     path="/products/{id}",
+     *     tags={"Product"},
+     *     summary="Get a single Product By ID",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Single Product details",
+     *         @OA\JsonContent(
+     *           @OA\Property(
+     *             property="status",
+     *             type="boolean",
+     *             example="true",
+     *             description="true for success, false for fail"
+     *           ),
+     *           @OA\Property(
+     *             property="message",
+     *             type = "string",
+     *             example="Product details"
+     *           ),
+     *           @OA\Property(
+     *             property="code",
+     *             type = "integer",
+     *             example="200"
+     *           ),
+     *           @OA\Property(
+     *             property="data",
+     *             type="object",
+     *             ref="#/components/schemas/Product"
+     *           )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *       response=404, 
+     *       description="Product not found.",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="status", type="boolean", example=false),
+     *          @OA\Property(property="message", type="string", example="Product not found."),
+     *          @OA\Property(property="code", type="integer", example=404),
+     *       )
+     *     ),
+     * )
+     */
+
     public function show(Product $product)
     {
         if ($product->company_id !== auth()->user()->company_id) {
@@ -77,6 +211,49 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
+
+
+    /**
+     * @OA\Put(
+     *     path="/products/{id}",
+     *     tags={"Product"},
+     *     summary="Update Product details",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *  @OA\RequestBody(
+     *   required=true,
+     *   @OA\JsonContent(
+     *     type="object",
+     *     required={"name", "brand", "company_price"},
+     *     @OA\Property(property="name", type="string", example="Sellaz Product"),
+     *     @OA\Property(property="brand", type="string", example="This is the best Product ever."),
+     *     @OA\Property(property="company_price", type="integer", example=12000)
+     *   )
+     * ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product updated",
+     *         @OA\JsonContent(
+     *           @OA\Property(property="status", type="boolean", example=true),
+     *           @OA\Property(property="code", type="integer", example=200),
+     *           @OA\Property(property="message", type="string", example="Product updated successfully."),
+     *           @OA\Property(
+     *             property="name",
+     *             type="string",
+     *             ref="#/components/schemas/Product"
+     *           )
+     *         )
+     *     ),
+     *     @OA\Response(response=422, ref="#/components/responses/422"),
+     * )
+     */
+
+
     public function update(Request $request, Product $product)
     {
         if ($product->company_id !== auth()->user()->company_id) {
@@ -101,6 +278,40 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Remove the specified resource from storage.
      */
+
+
+    /**
+     * @OA\Delete(
+     *     path="/products/{id}",
+     *     tags={"Product"},
+     *     summary="Delete a Product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *       response=204, 
+     *       description="Product deleted successfully.",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="status", type="boolean", example=true),
+     *          @OA\Property(property="message", type="string", example="Product deleted successfully."),
+     *          @OA\Property(property="code", type="integer", example=204),
+     *       )
+     *     ),
+     *     @OA\Response(
+     *       response=404, 
+     *       description="Product not found.",
+     *       @OA\JsonContent(
+     *          @OA\Property(property="status", type="boolean", example=false),
+     *          @OA\Property(property="message", type="string", example="Product not found."),
+     *          @OA\Property(property="code", type="integer", example=404),
+     *       )
+     *     ),
+     * )
+     */
     public function destroy(Product $product)
     {
         if ($product->company_id !== auth()->user()->company_id) {
@@ -109,6 +320,6 @@ class ProductController extends Controller implements HasMiddleware
 
         $product->delete();
 
-        return ResponseHelper::success('Product deleted successfully');
+        return ResponseHelper::success('Product deleted successfully', [], 204);
     }
 }

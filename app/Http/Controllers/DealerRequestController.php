@@ -15,6 +15,90 @@ class DealerRequestController extends Controller
 
 
 
+    /**
+     * Place a new order as a Super Dealer.
+     *
+     * @OA\Post(
+     *     path="/orders/request",
+     *     summary="Place an order request",
+     *     tags={"Super Dealer"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"products"},
+     *             @OA\Property(
+     *                 property="products",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     required={"product_id", "quantity"},
+     *                     @OA\Property(
+     *                         property="product_id",
+     *                         type="integer",
+     *                         example=101,
+     *                         description="ID of the product"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="quantity",
+     *                         type="integer",
+     *                         example=3,
+     *                         description="Quantity of the product"
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order placed successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order placed successfully."),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="order_id", type="integer", example=123),
+     *                 @OA\Property(property="total", type="number", format="float", example=15000.00)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Only super dealers can place orders",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Only super dealers can place orders.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation failed."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 example={"products.0.product_id": {"Each product must have a product ID."}}
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Order creation failed",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Order creation failed."),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="object",
+     *                 @OA\Property(property="error", type="string", example="Product ID 999 not found for this company.")
+     *             )
+     *         )
+     *     )
+     * )
+     */
 
     public function request(Request $request)
     {
@@ -53,7 +137,7 @@ class DealerRequestController extends Controller
 
 
 
-            // return $productsInput;
+        // return $productsInput;
         $totalAmount = 0;
 
         DB::beginTransaction();

@@ -120,6 +120,49 @@ class BikerSaleController extends Controller
 
 
 
+
+    /**
+ * Complete a biker order after reconciliation of sold and returned items.
+ *
+ * @OA\Post(
+ *     path="/biker/order/complete/{id}",
+ *     summary="Complete a biker order",
+ *     tags={"BikerOrders"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the biker order to complete",
+ *         required=true,
+ *         @OA\Schema(type="integer", example=123)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Biker order completed successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Biker order completed successfully with full reconciliation.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Reconciliation error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Reconciliation failed for product ID 5. Missing 3 items.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Order or items not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Order not found")
+ *         )
+ *     )
+ * )
+ */
+
     public function complete(int $id)
     {
         $bikerOrder = BikerOrder::find($id);
@@ -162,6 +205,62 @@ class BikerSaleController extends Controller
     }
 
 
+
+
+    /**
+ * Close a completed biker order and record the commission.
+ *
+ * @OA\Post(
+ *     path="/biker/order/close/{id}",
+ *     summary="Close a biker order and record commission",
+ *     tags={"BikerOrders"},
+ *     security={{"bearerAuth":{}}},
+ *     @OA\Parameter(
+ *         name="id",
+ *         in="path",
+ *         description="ID of the biker order to close",
+ *         required=true,
+ *         @OA\Schema(type="integer", example=123)
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Order closed and commission recorded successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=true),
+ *             @OA\Property(property="message", type="string", example="Order closed and commission recorded."),
+ *             @OA\Property(property="data", type="object",
+ *                 @OA\Property(property="sales", type="number", format="float", example=1500.00),
+ *                 @OA\Property(property="commission", type="number", format="float", example=225.00),
+ *                 @OA\Property(property="biker_id", type="integer", example=45)
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Order status invalid for closing",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Cannot close an order unless it is marked complete.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Order not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Order not found")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Internal server error",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="success", type="boolean", example=false),
+ *             @OA\Property(property="message", type="string", example="Failed to close order: [error message]")
+ *         )
+ *     )
+ * )
+ */
 
 
     public function destroy(int $id)

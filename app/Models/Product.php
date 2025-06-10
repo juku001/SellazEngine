@@ -11,6 +11,7 @@ class Product extends Model
         'company_id',
         'name',
         'brand',
+        'image',
         'company_price'
     ];
 
