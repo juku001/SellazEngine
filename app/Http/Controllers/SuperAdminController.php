@@ -16,6 +16,47 @@ class SuperAdminController extends Controller
 
 
 
+
+
+        /**
+     * @OA\Get(
+     *     path="/superadmins",
+     *     tags={"Super Admin"},
+     *     summary="List all superadmins in the system",
+     *     description="Fetches a list of all registered superadmins.",
+     *     operationId="getsuperadmins",
+     *
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of superadmins retrieved successfully.",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="List of all superadmins"),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/SuperAdmin")
+     *             )
+     *         )
+     *     )
+     * )
+     */
+
+
+    public function index()
+    {
+        $users = User::where('role', 'super_admin')->all();
+        return ResponseHelper::success(
+            'List of all super admins',
+            $users
+        );
+    }
+
+
+
+
+
     /**
      * Get all super dealers of a specific company.
      *

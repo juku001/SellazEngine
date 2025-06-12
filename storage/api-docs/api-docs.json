@@ -2945,6 +2945,48 @@
                 ]
             }
         },
+        "/superadmins": {
+            "get": {
+                "tags": [
+                    "Super Admin"
+                ],
+                "summary": "List all superadmins in the system",
+                "description": "Fetches a list of all registered superadmins.",
+                "operationId": "getsuperadmins",
+                "responses": {
+                    "200": {
+                        "description": "List of superadmins retrieved successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List of all superadmins"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/SuperAdmin"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/companies/{id}/superdealers": {
             "get": {
                 "tags": [

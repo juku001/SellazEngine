@@ -28,9 +28,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::apiResource('companies', CompanyController::class);
 
+
+        
         Route::post('/register/superadmin', [RegistrationController::class, 'super']);
         Route::post('/register/superdealer', [RegistrationController::class, 'dealer']);
 
+        Route::get('/superadmins', [SuperAdminController::class, 'index']);
         Route::get('companies/{id}/superdealers', [SuperAdminController::class, 'superdealers']);
         Route::get('companies/{id}/bikers', [SuperAdminController::class, 'bikers']);
         Route::get('companies/{id}/products', [SuperAdminController::class, 'products']);
