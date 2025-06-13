@@ -22,18 +22,17 @@ Route::post('/login/app', [LogInController::class, 'app']);
 Route::post('/logout', [LogInController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/is_auth', [UserController::class, 'authorized']);
+    Route::get('/is_auth', [UserController::class, 'authorized']);
 
     Route::middleware(['check.user_type:super_admin'])->group(function () {
 
         Route::apiResource('companies', CompanyController::class);
-
-
-        
+    
         Route::post('/register/superadmin', [RegistrationController::class, 'super']);
         Route::post('/register/superdealer', [RegistrationController::class, 'dealer']);
 
-        Route::get('/superadmins', [SuperAdminController::class, 'index']);
+        // Route::get('/superadmins', [SuperAdminController::class, 'index']);
+        Route::apiResource('superadmins', SuperAdminController::class);
         Route::get('companies/{id}/superdealers', [SuperAdminController::class, 'superdealers']);
         Route::get('companies/{id}/bikers', [SuperAdminController::class, 'bikers']);
         Route::get('companies/{id}/products', [SuperAdminController::class, 'products']);

@@ -6,7 +6,9 @@ use App\Helpers\ResponseHelper;
 use App\Models\Company;
 use App\Models\Product;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 
 
@@ -18,7 +20,7 @@ class SuperAdminController extends Controller
 
 
 
-        /**
+    /**
      * @OA\Get(
      *     path="/superadmins",
      *     tags={"Super Admin"},
@@ -46,12 +48,13 @@ class SuperAdminController extends Controller
 
     public function index()
     {
-        $users = User::where('role', 'super_admin')->all();
+        $users = User::where('role', 'super_admin')->get();
         return ResponseHelper::success(
             'List of all super admins',
             $users
         );
     }
+
 
 
 

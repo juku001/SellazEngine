@@ -67,7 +67,11 @@ class CompanyController extends Controller
      *                     type="string",
      *                     format="binary",
      *                     description="Image file to upload"
-     *                 )
+     *                 ),
+     *                 @OA\Property(property="primary_color", type="string", example="#FF0000"),
+     *                 @OA\Property(property="secondary_color", type="string", example="#00FF00"),
+     *                 @OA\Property(property="background_color", type="string", example="#FFFFFF"),
+     *                 @OA\Property(property="text_color", type="string", example="#000000"),
      *             )
      *         )
      *     ),
@@ -103,7 +107,11 @@ class CompanyController extends Controller
             'name' => 'required|string',
             'abbr' => 'nullable|string',
             'description' => 'required|string',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'primary_color' => 'nullable|string',
+            'secondary_color' => 'nullable|string',
+            'background_color' => 'nullable|string',
+            'text_color' => 'nullable|string'
         ]);
         if ($validator->fails()) {
             return ResponseHelper::error(
@@ -120,6 +128,13 @@ class CompanyController extends Controller
             $company->name = $request->name;
             $company->abbr = $request->abbr;
             $company->description = $request->description;
+
+
+            $company->primary_color = $request->primary_color;
+            $company->secondary_color = $request->secondary_color;
+            $company->background_color = $request->background_color;
+            $company->text_color = $request->text_color;
+
             // Handle optional image upload
             if ($request->hasFile('logo')) {
                 $image = $request->file('logo');
@@ -258,6 +273,10 @@ class CompanyController extends Controller
             'name' => 'required|string|max:255',
             'abbr' => 'required|string|max:10',
             'description' => 'nullable|string',
+            'primary_color' => 'nullable|string',
+            'secondary_color' => 'nullable|string',
+            'background_color' => 'nullable|string',
+            'text_color' => 'nullable|string'
         ]);
 
         if ($validator->fails()) {
@@ -271,7 +290,7 @@ class CompanyController extends Controller
                 404
             );
         }
-        $company->update($request->only(['name', 'abbr', 'description']));
+        $company->update($request->only(['name', 'abbr', 'description', 'primary_color', 'secondary_color', 'background_color', 'text_color']));
 
         return ResponseHelper::success(
             'Company updated successfully.',
@@ -326,7 +345,7 @@ class CompanyController extends Controller
             $company->delete();
             return ResponseHelper::success(
                 'Company deleted successful.',
-                [], 
+                [],
                 204
             );
         }

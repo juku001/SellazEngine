@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ResponseHelper;
 use App\Models\Product;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controllers\HasMiddleware;
@@ -79,7 +80,7 @@ class ProductController extends Controller implements HasMiddleware
      *             @OA\Schema(
      *                 required={"name", "company_id","brand","image", "company_price"},
      *                 @OA\Property(property="name", type="string", example="Master Sports"),
-     *                 @OA\Property(property="brand", type="string", example="SM"),
+     *                 @OA\Property(property="brand", type="string", example="SM"), 
      *                 @OA\Property(property="company_id", type="integer", example=1),
      *                 @OA\Property(property="company_price", type="integer", example=12000),
      *                 @OA\Property(
@@ -123,6 +124,7 @@ class ProductController extends Controller implements HasMiddleware
             'abbr' => 'nullable|string|max:50',
             'company_id' => 'required|exists:companies,id',
             'company_price' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'brand' => 'required|string|max:50' // e.g., 'carton', 'packet'
         ]);
 
@@ -130,15 +132,28 @@ class ProductController extends Controller implements HasMiddleware
             return ResponseHelper::error('Validation failed', $validator->errors(), 422);
         }
 
-        $product = Product::create([
-            'company_id' => $request->company_id,
-            'name' => $request->name,
-            'brand' => $request->brand,
-            'company_price' => $request->company_price,
 
-        ]);
 
-        return ResponseHelper::success('Product created successfully', $product);
+        try {
+
+            $product = new Product();
+            $product->company_id = $request->company_id;
+            $product->name = $request->name;
+            $product->brand = $request->brand;
+            $product->company_price = $request->company_price;
+
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $image->move(public_path('products'), $imageName);
+                $product->logo = "products/" . $imageName;
+            }
+
+            return ResponseHelper::success('Product created successfully', $product);
+
+        } catch (Exception $e) {
+            return ResponseHelper::success('Error : ' . $e, [], 500);
+        }
     }
 
     /**
@@ -211,8 +226,6 @@ class ProductController extends Controller implements HasMiddleware
     /**
      * Update the specified resource in storage.
      */
-
-
     /**
      * @OA\Put(
      *     path="/products/{id}",
@@ -225,30 +238,37 @@ class ProductController extends Controller implements HasMiddleware
      *         required=true,
      *         @OA\Schema(type="integer")
      *     ),
-     *  @OA\RequestBody(
-     *   required=true,
-     *   @OA\JsonContent(
-     *     type="object",
-     *     required={"name", "brand", "company_price"},
-     *     @OA\Property(property="name", type="string", example="Sellaz Product"),
-     *     @OA\Property(property="brand", type="string", example="This is the best Product ever."),
-     *     @OA\Property(property="company_price", type="integer", example=12000)
-     *   )
-     * ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Product updated",
-     *         @OA\JsonContent(
-     *           @OA\Property(property="status", type="boolean", example=true),
-     *           @OA\Property(property="code", type="integer", example=200),
-     *           @OA\Property(property="message", type="string", example="Product updated successfully."),
-     *           @OA\Property(
-     *             property="name",
-     *             type="string",
-     *             ref="#/components/schemas/Product"
-     *           )
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"name", "brand", "company_price"},
+     *                 @OA\Property(property="name", type="string", example="Sellaz Product"),
+     *                 @OA\Property(property="brand", type="string", example="Best Brand"),
+     *                 @OA\Property(property="company_price", type="number", format="float", example=12000),
+     *                 @OA\Property(
+     *                     property="image",
+     *                     type="string",
+     *                     format="binary",
+     *                     description="Product image file"
+     *                 )
+     *             )
      *         )
      *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product updated successfully.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(property="message", type="string", example="Product updated successfully."),
+     *             @OA\Property(property="data", ref="#/components/schemas/Product")
+     *         )
+     *     ),
+     *     @OA\Response(response=403, description="Unauthorized access."),
      *     @OA\Response(response=422, ref="#/components/responses/422"),
      * )
      */
@@ -263,16 +283,27 @@ class ProductController extends Controller implements HasMiddleware
         $validator = Validator::make($request->all(), [
             'name' => 'sometimes|required|string|max:255',
             'company_price' => 'sometimes|required|numeric|min:0',
-            'brand' => 'sometimes|required|string|max:50'
+            'brand' => 'sometimes|required|string|max:50',
+            'image' => 'sometimes|required|file'
         ]);
 
         if ($validator->fails()) {
             return ResponseHelper::error('Validation failed', $validator->errors(), 422);
         }
 
+        // $product->update($request->only(['name', 'company_price', 'brand']));
+
+        // return ResponseHelper::success('Product updated successfully', $product);
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $product->image = $path;
+        }
+
         $product->update($request->only(['name', 'company_price', 'brand']));
+        $product->save(); // Ensure image change is saved
 
         return ResponseHelper::success('Product updated successfully', $product);
+
     }
 
     /**
