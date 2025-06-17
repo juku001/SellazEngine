@@ -1,40 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html style="height:100%">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EasyTrack API</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title> 404 Not Found
+    </title>
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        .container {
-            text-align: center;
-        }
-
-        .status {
-            font-size: 15px;
-            /* font-weight: bold; */
-
+        @media (prefers-color-scheme:dark) {
+            body {
+                background-color: #000 !important
+            }
         }
     </style>
 </head>
 
-<body>
-    <div class="container">
-        <h1 class="display-1">404</h1>
-        <h4>Page Not Found</h4>
-        <p class="status">Please contant support.</p>
-        <p class="status"><a href="mailto:support@sellaz.co.tz" style="text-decoration: none">support@sellaz.co.tz</a></p>
+<body
+    style="color: #444; margin:0;font: normal 14px/20px Arial, Helvetica, sans-serif; height:100%; background-color: #fff;">
+    <div style="height:auto; min-height:100%; ">
+        <div style="text-align: center; width:800px; margin-left: -400px; position:absolute; top: 30%; left:50%;">
+            <h1 style="margin:0; font-size:150px; line-height:150px; font-weight:bold;">404</h1>
+            <h2 style="margin-top:20px;font-size: 30px;">Not Found
+            </h2>
+            <p>The resource requested could not be found on this server!</p>
+        </div>
     </div>
 </body>
 

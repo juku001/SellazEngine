@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,6 +13,98 @@ use App\Helpers\ResponseHelper;
 
 class DealerRequestController extends Controller
 {
+
+
+
+
+    /**
+     * @OA\Get(
+     *     path="/orders/request/{id}",
+     *     tags={"Super Dealer"},
+     *     summary="Get all Super Dealer Orders for a company",
+     *     description="Returns a list of Super Dealer orders for the given company, including each order's company, super dealer, and the super dealer's company.",
+     *     operationId="getCompanyOrders",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the company",
+     *         required=true,
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Orders retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Orders retrieved successfully."),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=12),
+     *                     @OA\Property(property="name", type="string", example="Order #12"),
+     *                     @OA\Property(property="brand", type="string", example="ABC"),
+     *                     @OA\Property(property="total_amount", type="number", format="float", example=450000),
+     *                     @OA\Property(property="company_price", type="number", format="float", example=400000),
+     *                     @OA\Property(property="date_to_pay", type="string", format="date", example="2025-07-15"),
+     *                     @OA\Property(
+     *                         property="company",
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=3),
+     *                         @OA\Property(property="name", type="string", example="EasyTrack Ltd")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="super_dealer",
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=7),
+     *                         @OA\Property(property="name", type="string", example="Jane Super"),
+     *                         @OA\Property(
+     *                             property="company",
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=3),
+     *                             @OA\Property(property="name", type="string", example="EasyTrack Ltd")
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Company not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Company does not exist"),
+     *             @OA\Property(property="code", type="integer", example=404),
+     *             @OA\Property(property="errors", type="array", @OA\Items(type="string"))
+     *         )
+     *     )
+     * )
+     */
+
+
+    public function index($id)
+    {
+        // 1.  Verify the company exists
+        $company = Company::find($id);
+        if (!$company) {
+            return ResponseHelper::error('Company does not exist', [], 404);
+        }
+
+        // 2.  Pull all orders for this company and eager‑load relationships
+        $orders = SuperDealerOrder::with([
+            'company',                     // the order’s own company
+            'superDealer.company'          // superDealer + superDealer->company
+        ])
+            ->where('company_id', $company->id)
+            ->get();
+
+        return ResponseHelper::success('Orders retrieved successfully.', $orders);
+    }
+
+
 
 
 
@@ -186,6 +279,11 @@ class DealerRequestController extends Controller
             return ResponseHelper::error('Order creation failed.', ['error' => $e->getMessage()], 500);
         }
     }
+
+
+
+
+
 
 
 }

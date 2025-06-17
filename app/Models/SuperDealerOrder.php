@@ -16,4 +16,16 @@ class SuperDealerOrder extends Model
         'date_to_pay'
 
     ];
+
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
+
+    public function superDealer()
+    {
+        return $this->belongsTo(User::class, 'super_dealer_id');
+    }
 }

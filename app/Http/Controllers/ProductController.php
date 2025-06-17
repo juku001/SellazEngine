@@ -345,6 +345,12 @@ class ProductController extends Controller implements HasMiddleware
      */
     public function destroy(Product $product)
     {
+
+        if(!$product){
+            return ResponseHelper::error('Product not found.', [], 404);
+        }
+
+
         if ($product->company_id !== auth()->user()->company_id) {
             return ResponseHelper::error('Unauthorized access.', [], 403);
         }

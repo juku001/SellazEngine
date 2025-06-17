@@ -22,4 +22,11 @@ class Company extends Model
     {
         return $this->hasMany(User::class, 'company_id');
     }
+
+
+
+    public function superDealerOrders()
+    {
+        return $this->hasMany(SuperDealerOrder::class, 'company_id');
+    }
 }

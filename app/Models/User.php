@@ -19,6 +19,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'id',
         'name',
         'email',
         'company_id',
@@ -64,5 +65,10 @@ class User extends Authenticatable
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function superDealerOrders()
+    {
+        return $this->hasMany(SuperDealerOrder::class, 'super_dealer_id');
     }
 }

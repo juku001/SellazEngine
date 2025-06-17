@@ -665,6 +665,22 @@
                                         "description": "Image file to upload",
                                         "type": "string",
                                         "format": "binary"
+                                    },
+                                    "primary_color": {
+                                        "type": "string",
+                                        "example": "#FF0000"
+                                    },
+                                    "secondary_color": {
+                                        "type": "string",
+                                        "example": "#00FF00"
+                                    },
+                                    "background_color": {
+                                        "type": "string",
+                                        "example": "#FFFFFF"
+                                    },
+                                    "text_color": {
+                                        "type": "string",
+                                        "example": "#000000"
                                     }
                                 },
                                 "type": "object"
@@ -962,6 +978,163 @@
                                         "code": {
                                             "type": "integer",
                                             "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/orders/request/{id}": {
+            "get": {
+                "tags": [
+                    "Super Dealer"
+                ],
+                "summary": "Get all Super Dealer Orders for a company",
+                "description": "Returns a list of Super Dealer orders for the given company, including each order's company, super dealer, and the super dealer's company.",
+                "operationId": "getCompanyOrders",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the company",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Orders retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Orders retrieved successfully."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 12
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Order #12"
+                                                    },
+                                                    "brand": {
+                                                        "type": "string",
+                                                        "example": "ABC"
+                                                    },
+                                                    "total_amount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 450000
+                                                    },
+                                                    "company_price": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 400000
+                                                    },
+                                                    "date_to_pay": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2025-07-15"
+                                                    },
+                                                    "company": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 3
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "EasyTrack Ltd"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "super_dealer": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 7
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Jane Super"
+                                                            },
+                                                            "company": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 3
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "EasyTrack Ltd"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Company not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Company does not exist"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
                                         }
                                     },
                                     "type": "object"
@@ -2397,7 +2570,7 @@
                 "requestBody": {
                     "required": true,
                     "content": {
-                        "application/json": {
+                        "multipart/form-data": {
                             "schema": {
                                 "required": [
                                     "name",
@@ -2411,11 +2584,17 @@
                                     },
                                     "brand": {
                                         "type": "string",
-                                        "example": "This is the best Product ever."
+                                        "example": "Best Brand"
                                     },
                                     "company_price": {
-                                        "type": "integer",
+                                        "type": "number",
+                                        "format": "float",
                                         "example": 12000
+                                    },
+                                    "image": {
+                                        "description": "Product image file",
+                                        "type": "string",
+                                        "format": "binary"
                                     }
                                 },
                                 "type": "object"
@@ -2425,7 +2604,7 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Product updated",
+                        "description": "Product updated successfully.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2442,7 +2621,7 @@
                                             "type": "string",
                                             "example": "Product updated successfully."
                                         },
-                                        "name": {
+                                        "data": {
                                             "$ref": "#/components/schemas/Product"
                                         }
                                     },
@@ -2450,6 +2629,9 @@
                                 }
                             }
                         }
+                    },
+                    "403": {
+                        "description": "Unauthorized access."
                     },
                     "422": {
                         "$ref": "#/components/responses/422"
@@ -3431,6 +3613,281 @@
                                         "message": {
                                             "type": "string",
                                             "example": "Super dealer does not exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/superadmins/{id}": {
+            "put": {
+                "tags": [
+                    "Super Admin"
+                ],
+                "summary": "Update an existing Super Admin",
+                "description": "Edits the profile of a super admin user.",
+                "operationId": "update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the super admin to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 3
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Jane Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "jane@example.com"
+                                    },
+                                    "phone": {
+                                        "type": "string",
+                                        "example": "255713334455"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newSecret123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newSecret123"
+                                    },
+                                    "sex": {
+                                        "type": "string",
+                                        "enum": [
+                                            "male",
+                                            "female"
+                                        ],
+                                        "example": "female"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Super admin updated successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Super admin updated successfully."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/SuperAdmin"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Super admin not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Super admin not found."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation Error."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 422
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "email": [
+                                                    "The email has already been taken."
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Super Admin"
+                ],
+                "summary": "Delete a Superadmin",
+                "operationId": "4c92a01fa9b3bbc032f1499dc42f6056",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Superadmin deleted successfully.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Superadmin deleted successfully."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 204
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Superadmin not found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Superadmin not found."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Unauthorized access.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized access."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 403
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Can't delete the primary super admin"
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 400
                                         }
                                     },
                                     "type": "object"
