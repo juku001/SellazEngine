@@ -993,7 +993,122 @@
                 ]
             }
         },
-        "/orders/request/{id}": {
+        "/orders/requests": {
+            "get": {
+                "tags": [
+                    "Super Dealer"
+                ],
+                "summary": "Get all Super Dealer Orders",
+                "description": "Returns a list of all the Super Dealer orders, including super dealer, and the super dealer's company.",
+                "operationId": "getOrders",
+                "responses": {
+                    "200": {
+                        "description": "Orders retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "status": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Orders retrieved successfully."
+                                        },
+                                        "code": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 12
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Order #12"
+                                                    },
+                                                    "brand": {
+                                                        "type": "string",
+                                                        "example": "ABC"
+                                                    },
+                                                    "total_amount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 450000
+                                                    },
+                                                    "company_price": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 400000
+                                                    },
+                                                    "date_to_pay": {
+                                                        "type": "string",
+                                                        "format": "date",
+                                                        "example": "2025-07-15"
+                                                    },
+                                                    "company": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 3
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "EasyTrack Ltd"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    },
+                                                    "super_dealer": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 7
+                                                            },
+                                                            "name": {
+                                                                "type": "string",
+                                                                "example": "Jane Super"
+                                                            },
+                                                            "company": {
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "integer",
+                                                                        "example": 3
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string",
+                                                                        "example": "EasyTrack Ltd"
+                                                                    }
+                                                                },
+                                                                "type": "object"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/orders/requests/{id}": {
             "get": {
                 "tags": [
                     "Super Dealer"

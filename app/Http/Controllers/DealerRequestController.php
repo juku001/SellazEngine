@@ -14,12 +14,77 @@ use App\Helpers\ResponseHelper;
 class DealerRequestController extends Controller
 {
 
+    /**
+     * @OA\Get(
+     *     path="/orders/requests",
+     *     tags={"Super Dealer"},
+     *     summary="Get all Super Dealer Orders",
+     *     description="Returns a list of all the Super Dealer orders, including super dealer, and the super dealer's company.",
+     *     operationId="getOrders",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Orders retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="status", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Orders retrieved successfully."),
+     *             @OA\Property(property="code", type="integer", example=200),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="id", type="integer", example=12),
+     *                     @OA\Property(property="name", type="string", example="Order #12"),
+     *                     @OA\Property(property="brand", type="string", example="ABC"),
+     *                     @OA\Property(property="total_amount", type="number", format="float", example=450000),
+     *                     @OA\Property(property="company_price", type="number", format="float", example=400000),
+     *                     @OA\Property(property="date_to_pay", type="string", format="date", example="2025-07-15"),
+     *                     @OA\Property(
+     *                         property="company",
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=3),
+     *                         @OA\Property(property="name", type="string", example="EasyTrack Ltd")
+     *                     ),
+     *                     @OA\Property(
+     *                         property="super_dealer",
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=7),
+     *                         @OA\Property(property="name", type="string", example="Jane Super"),
+     *                         @OA\Property(
+     *                             property="company",
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=3),
+     *                             @OA\Property(property="name", type="string", example="EasyTrack Ltd")
+     *                         )
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     * )
+     */
+
+
+    public function all()
+    {
+        // 2.  Pull all orders for this company and eager‑load relationships
+        $orders = SuperDealerOrder::with([
+            'company',                     // the order’s own company
+            'superDealer.company'          // superDealer + superDealer->company
+        ])
+            ->get();
+
+        return ResponseHelper::success('Orders retrieved successfully.', $orders);
+    }
+
+
+
 
 
 
     /**
      * @OA\Get(
-     *     path="/orders/request/{id}",
+     *     path="/orders/requests/{id}",
      *     tags={"Super Dealer"},
      *     summary="Get all Super Dealer Orders for a company",
      *     description="Returns a list of Super Dealer orders for the given company, including each order's company, super dealer, and the super dealer's company.",

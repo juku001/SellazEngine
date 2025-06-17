@@ -45,7 +45,8 @@ Route::middleware('enforceJson')->group(function () {
 
         Route::apiResource('products', ProductController::class);
         Route::post('/orders/request', [DealerRequestController::class, 'request']);
-        Route::get('/orders/request/{id}', [DealerRequestController::class, 'index'])->middleware('check.user_type:super_admin');
+        Route::get('/orders/requests', [DealerRequestController::class, 'all'])->middleware('check.user_type:super_admin');
+        Route::get('/orders/requests/{id}', [DealerRequestController::class, 'index'])->middleware('check.user_type:super_admin');
         Route::post('/orders/status', [DealerStockController::class, 'status']);
         Route::post('/orders/fulfill', [DealerStockController::class, 'store']);
 
