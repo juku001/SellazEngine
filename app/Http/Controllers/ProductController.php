@@ -149,10 +149,14 @@ class ProductController extends Controller implements HasMiddleware
                 $product->logo = "products/" . $imageName;
             }
 
-            return ResponseHelper::success('Product created successfully', $product);
+            if ($product->save()) {
+                return ResponseHelper::success('Product added successful.', $product, 201);
+            } else {
+                return ResponseHelper::error('Failed to add Product.', [], 500);
+            }
 
         } catch (Exception $e) {
-            return ResponseHelper::success('Error : ' . $e, [], 500);
+            return ResponseHelper::error('Error : ' . $e, [], 500);
         }
     }
 
@@ -295,7 +299,7 @@ class ProductController extends Controller implements HasMiddleware
 
         // return ResponseHelper::success('Product updated successfully', $product);
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
+            $path = $request->file(key: 'image')->store('products', 'public');
             $product->image = $path;
         }
 
