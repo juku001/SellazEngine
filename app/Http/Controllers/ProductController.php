@@ -146,7 +146,7 @@ class ProductController extends Controller implements HasMiddleware
                 $image = $request->file('image');
                 $imageName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
                 $image->move(public_path('products'), $imageName);
-                $product->logo = "products/" . $imageName;
+                $product->image = "products/" . $imageName;
             }
 
             if ($product->save()) {
