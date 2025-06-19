@@ -4018,6 +4018,116 @@
                 ]
             }
         },
+        "/bikers": {
+            "get": {
+                "tags": [
+                    "Super Dealer"
+                ],
+                "summary": "List bikers of the authenticated super dealer",
+                "description": "Get all bikers under a specific super dealer.",
+                "operationId": "8504808ff3acea6b396f057a54ec93dc",
+                "responses": {
+                    "200": {
+                        "description": "List of bikers of the logged in super dealer",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List of bikers of the logged in super dealer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 201
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Biker Alex"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "biker@delivery.com"
+                                                    },
+                                                    "role": {
+                                                        "type": "string",
+                                                        "example": "biker"
+                                                    },
+                                                    "super_dealer_id": {
+                                                        "type": "integer",
+                                                        "example": 101
+                                                    },
+                                                    "vehicle": {
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "biker_id": {
+                                                                "type": "integer",
+                                                                "example": 1
+                                                            },
+                                                            "plate_number": {
+                                                                "type": "string",
+                                                                "example": "T123ABC"
+                                                            },
+                                                            "type": {
+                                                                "type": "string",
+                                                                "example": "Boxer"
+                                                            },
+                                                            "brand": {
+                                                                "type": "integer",
+                                                                "example": "Toyota"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Super dealer does not exist",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Super dealer does not exist."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/is_auth": {
             "get": {
                 "tags": [

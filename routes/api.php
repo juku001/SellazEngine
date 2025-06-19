@@ -10,6 +10,7 @@ use App\Http\Controllers\LogInController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\SuperAdminController;
+use App\Http\Controllers\SuperDealerController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +44,9 @@ Route::middleware('enforceJson')->group(function () {
         });
         Route::post('/register/biker', [RegistrationController::class, 'biker'])->middleware('check.user_type:super_dealer');
 
+
+
+        Route::get('/bikers', [SuperDealerController::class, 'bikers']);
         Route::apiResource('products', ProductController::class);
         Route::post('/orders/request', [DealerRequestController::class, 'request']);
         Route::get('/orders/requests', [DealerRequestController::class, 'all'])->middleware('check.user_type:super_admin');
