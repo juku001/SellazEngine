@@ -3,6 +3,7 @@
 use App\Http\Controllers\BikerOrderController;
 use App\Http\Controllers\BikerSaleController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DealerRequestController;
 use App\Http\Controllers\DealerStockBalanceController;
 use App\Http\Controllers\DealerStockController;
@@ -45,6 +46,8 @@ Route::middleware('enforceJson')->group(function () {
         Route::post('/register/biker', [RegistrationController::class, 'biker'])->middleware('check.user_type:super_dealer');
 
 
+
+        Route::get('/dashboard',[DashboardController::class, 'app']);
 
         Route::get('/bikers', [SuperDealerController::class, 'bikers']);
         Route::apiResource('products', ProductController::class);
